@@ -81,6 +81,76 @@ const Display = () => {
     }
   };
 
+  const otIn = async () => {
+    const now = new Date();
+    const formattedDate = `${now.getFullYear().toString()}/${(
+      now.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}/${now.getDate().toString().padStart(2, "0")}`;
+
+    const formattedTime = `${now.getHours().toString().padStart(2, "0")}:${now
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
+
+    const res = await fetchData("/attendances/otin", "PUT", {
+      OT_clock_in: formattedTime,
+      user_id: 1,
+      date: formattedDate,
+    });
+
+    if (res.ok) {
+      getAllAttendances();
+    } else {
+      alert(JSON.stringify(res.data));
+      console.log(res);
+    }
+  };
+
+  const otOut = async () => {
+    const now = new Date();
+    const formattedDate = `${now.getFullYear().toString()}/${(
+      now.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}/${now.getDate().toString().padStart(2, "0")}`;
+
+    const formattedTime = `${now.getHours().toString().padStart(2, "0")}:${now
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
+
+    const res = await fetchData("/attendances/otout", "PUT", {
+      OT_clock_out: formattedTime,
+      user_id: 1,
+      date: formattedDate,
+    });
+
+    if (res.ok) {
+      getAllAttendances();
+    } else {
+      alert(JSON.stringify(res.data));
+      console.log(res);
+    }
+  };
+
+  const deleteAttendance = async (id) => {
+    try {
+      const res = await fetchData("/attendances/id", "DELETE", {
+        id: id,
+      });
+
+      if (res.ok) {
+        getAllAttendances();
+      } else {
+        console.log(res.data);
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   useEffect(() => {
     getAllCompanies();
     getAllUsers();
@@ -108,13 +178,22 @@ const Display = () => {
       <hr />
       <button onClick={clockIn}>Clock in</button>
       <button onClick={clockOut}>Clock out</button>
+      <button onClick={otIn}>OT in</button>
+      <button onClick={otOut}>OT out</button>
       {attendances.map((item, key) => {
         return (
           <div key={key}>
+            <hr />
             <div>{item.date}</div> <div>{item.clock_in}</div>{" "}
             <div>{item.clock_out}</div> <div>{item.OT_clock_in}</div>{" "}
-            <div>{item.OT_clock_out}</div> <div>{item.user_id}</div>{" "}
-            <div>{item.company_id}</div>{" "}
+            <div>{item.OT_clock_out}</div>
+            <button
+              onClick={() => {
+                deleteAttendance(item.id);
+              }}
+            >
+              Delete
+            </button>
           </div>
         );
       })}
