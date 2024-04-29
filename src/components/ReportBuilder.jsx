@@ -7,6 +7,7 @@ const ReportBuilder = () => {
   const [rows, setRows] = useState([]);
   const [data, setData] = useState([[]]);
 
+  // Function to export from csv file
   const exportToCSV = () => {
     const csvRows = [];
     // Add column labels
@@ -31,6 +32,7 @@ const ReportBuilder = () => {
     document.body.removeChild(link);
   };
 
+  // Function to import from csv file
   const importFromCSV = (event) => {
     const file = event.target.files[0];
     Papa.parse(file, {
@@ -50,6 +52,7 @@ const ReportBuilder = () => {
     });
   };
 
+  // Function to export into json file
   const exportToJSON = () => {
     const jsonData = JSON.stringify(data);
     // Trigger download or save the JSON string as needed
@@ -67,6 +70,7 @@ const ReportBuilder = () => {
     document.body.removeChild(link);
   };
 
+  // Function to import from json file
   const importFromJSON = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -91,6 +95,7 @@ const ReportBuilder = () => {
     setData([...data, data[0].map(() => ({ value: "" }))]);
   };
 
+  // Function to remove last column
   const removeLastColumn = () => {
     if (columns.length > 0) {
       setColumns(columns.slice(0, -1));
@@ -98,6 +103,7 @@ const ReportBuilder = () => {
     }
   };
 
+  // Function to remove last row
   const removeLastRow = () => {
     if (rows.length > 0) {
       setRows(rows.slice(0, -1));
@@ -121,13 +127,9 @@ const ReportBuilder = () => {
       <div style={{ height: 250, width: 800, overflow: "auto" }}>
         <Spreadsheet
           data={data}
+          columns={columns}
+          rows={rows}
           onChange={setData}
-          renderCell={(cell) => {
-            if (cell.columnIndex === 1) {
-              return <DropdownCell value={cell.value} onChange={setData} />;
-            }
-            return cell.value;
-          }}
         />
       </div>
     </div>
