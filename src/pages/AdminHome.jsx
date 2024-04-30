@@ -6,7 +6,6 @@ const AdminHome = () => {
   return (
     <div>
       <ReportBuilder />
-      <Display />
     </div>
   );
 };
