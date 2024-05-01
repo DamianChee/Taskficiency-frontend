@@ -160,6 +160,9 @@ const Display = () => {
   return (
     <div>
       <hr />
+      <h3 className="p-3 m-3 bg-info bg-opacity-10 border border-info rounded">
+        Companies
+      </h3>
       {companies.map((item, key) => {
         return (
           <div key={key}>
@@ -168,6 +171,9 @@ const Display = () => {
         );
       })}
       <hr />
+      <h3 className="p-3 m-3 bg-info bg-opacity-10 border border-info rounded">
+        Users
+      </h3>
       {users.map((item, key) => {
         return (
           <div key={key}>
@@ -176,14 +182,20 @@ const Display = () => {
         );
       })}
       <hr />
+      <h3 className="p-3 m-3 bg-info bg-opacity-10 border border-info rounded">
+        Clocking buttons
+      </h3>
       <button onClick={clockIn}>Clock in</button>
       <button onClick={clockOut}>Clock out</button>
       <button onClick={otIn}>OT in</button>
       <button onClick={otOut}>OT out</button>
+      <hr />
+      <h3 className="p-3 m-3 bg-info bg-opacity-10 border border-info rounded">
+        Attendances
+      </h3>
       {attendances.map((item, key) => {
         return (
           <div key={key}>
-            <hr />
             <div>{item.date}</div> <div>{item.clock_in}</div>{" "}
             <div>{item.clock_out}</div> <div>{item.OT_clock_in}</div>{" "}
             <div>{item.OT_clock_out}</div>
@@ -194,6 +206,7 @@ const Display = () => {
             >
               Delete
             </button>
+            <hr />
           </div>
         );
       })}
