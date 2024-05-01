@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import Spreadsheet from "react-spreadsheet";
 import Papa from "papaparse";
+import useFetch from "../hooks/useFetch";
 
 const ReportBuilder = () => {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [data, setData] = useState([[]]);
+  const fetchData = useFetch();
 
   // Function to export from csv file
   const exportToCSV = () => {
@@ -50,6 +52,7 @@ const ReportBuilder = () => {
         setData(newData);
       },
     });
+    event.target.value = "";
   };
 
   // Function to export into json file
@@ -79,6 +82,43 @@ const ReportBuilder = () => {
       setData(jsonData);
     };
     reader.readAsText(file);
+    event.target.value = "";
+  };
+
+  // Function to save as json to database
+  const saveFormatToDatabase = async () => {
+    try {
+      const res = await fetchData("/format/create", "PUT", {
+        format: data,
+      });
+
+      if (res.ok) {
+        alert("Format Saved!");
+      } else {
+        console.log(res);
+      }
+    } catch (error) {
+      alert(error.message);
+      console.log(error.message);
+    }
+  };
+
+  // Function to save as json to database
+  const saveReportToDatabase = async () => {
+    try {
+      const res = await fetchData("/report/create", "PUT", {
+        reports: data,
+      });
+
+      if (res.ok) {
+        alert("Report Saved!");
+      } else {
+        console.log(res);
+      }
+    } catch (error) {
+      alert(error.message);
+      console.log(error.message);
+    }
   };
 
   // Function to add a new column
@@ -112,19 +152,107 @@ const ReportBuilder = () => {
   };
 
   return (
-    <div>
-      <input type="file" accept=".csv" onChange={importFromCSV} />
-      <button onClick={exportToCSV}>Export to CSV</button>
+    <div className="container">
+      <h3 className="p-3 my-3 bg-info bg-opacity-10 border border-info rounded">
+        Report Builder
+      </h3>
+      {/* <div class="input-group mb-3">
+        <label class="input-group-text" htmlFor="inputGroupFile01">
+          CSV
+        </label>
+        <button onClick={exportToCSV}>Export to CSV</button>
+        <input type="file" className="form-control" id="inputGroupFile01" />
+      </div> */}
+      <div className="input-group px-3 mt-1 row">
+        <label className="input-group-text col-md-1">CSV</label>
+        <input
+          className="form-control col-md-4 rounded-end"
+          type="file"
+          accept=".csv"
+          onChange={importFromCSV}
+        />
+        <div className="col-md-1" />
+        <button
+          className="btn btn-outline-primary col-md-2 rounded-start"
+          onClick={importFromCSV}
+        >
+          Import
+        </button>
+        <button
+          className="btn btn-outline-primary col-md-2 rounded-end"
+          onClick={exportToCSV}
+        >
+          Export
+        </button>
+        <div className="col-md-2" />
+      </div>
+      <div className="input-group px-3 mt-1 row">
+        <label className="input-group-text col-md-1">JSON</label>
+        <input
+          className="form-control col-md-4 rounded-end"
+          type="file"
+          accept=".json"
+          onChange={importFromJSON}
+        />
+        <div className="col-md-1" />
+        <button
+          className="btn btn-outline-primary col-md-2 rounded-start"
+          onClick={importFromJSON}
+        >
+          Import
+        </button>
+        <button
+          className="btn btn-outline-primary col-md-2 rounded-end"
+          onClick={exportToJSON}
+        >
+          Export
+        </button>
+        <div className="col-md-2" />
+      </div>
       <br />
-      <input type="file" accept=".json" onChange={importFromJSON} />
-      <button onClick={exportToJSON}>Export to JSON</button>
-      <br />
-      <br />
-      <button onClick={addColumn}>Add Column</button>
-      <button onClick={addRow}>Add Row</button>
-      <button onClick={removeLastColumn}>Remove Column</button>
-      <button onClick={removeLastRow}>Remove Row</button>
-      <div style={{ height: 250, width: 800, overflow: "auto" }}>
+      <div
+        className="input-group px-3 mb-3 row"
+        role="group"
+        aria-label="Basic outlined example"
+      >
+        <button
+          className="btn btn-outline-primary col-md-2"
+          onClick={addColumn}
+        >
+          Add Column
+        </button>
+        <button className="btn btn-outline-primary col-md-2" onClick={addRow}>
+          Add Row
+        </button>
+        <button
+          className="btn btn-outline-primary col-md-2"
+          onClick={removeLastColumn}
+        >
+          Remove Column
+        </button>
+        <button
+          className="btn btn-outline-primary col-md-2"
+          onClick={removeLastRow}
+        >
+          Remove Row
+        </button>
+        <button
+          className="btn btn-outline-primary col-md-2"
+          onClick={saveFormatToDatabase}
+        >
+          Save format
+        </button>
+        <button
+          className="btn btn-outline-primary col-md-2"
+          onClick={saveReportToDatabase}
+        >
+          Save report
+        </button>
+      </div>
+      <div
+        style={{ height: 250, width: 800, overflow: "auto" }}
+        className="border border-primary-subtle"
+      >
         <Spreadsheet
           data={data}
           columns={columns}
