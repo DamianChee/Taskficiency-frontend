@@ -2,7 +2,7 @@ import React from "react";
 import { myContext } from "./MyContext";
 import useFetch from "../hooks/useFetch";
 
-const Formats = ({ select }) => {
+const Formats = ({ select, setter }) => {
   const { formats } = myContext();
   const fetchData = useFetch();
   const { getAllFormats, userInfo } = myContext();
@@ -32,7 +32,10 @@ const Formats = ({ select }) => {
               <button
                 type="button"
                 className="btn btn-outline-primary"
-                onClick={() => select(format.id)}
+                onClick={() => {
+                  select(format.id);
+                  setter(true);
+                }}
               >
                 Load
               </button>
