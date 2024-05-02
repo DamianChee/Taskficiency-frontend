@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
@@ -10,8 +10,19 @@ import AdminHome from "./pages/AdminHomePage";
 import EmployerHome from "./pages/EmployerHomePage";
 import DevPage from "./pages/DevPage";
 import ProfilePage from "./pages/ProfilePage";
+import { myContext } from "./components/MyContext";
 
 function App() {
+  const { getAllCompanies, getAllRoles, getRoleNames, getAllAttendanceTypes } =
+    myContext();
+
+  useEffect(() => {
+    getAllCompanies();
+    getAllRoles();
+    getRoleNames();
+    getAllAttendanceTypes();
+  }, []);
+
   return (
     <div>
       <h2>GA SEI</h2>
