@@ -6,9 +6,10 @@ import Sidebar from "./components/Sidebar";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage";
-import AdminHome from "./pages/AdminHome";
-import EmployerHome from "./pages/EmployerHome";
+import AdminHome from "./pages/AdminHomePage";
+import EmployerHome from "./pages/EmployerHomePage";
 import DevPage from "./pages/DevPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/employer" element={<EmployerHome />} />
           <Route path="/adminhome" element={<AdminHome />} />
           <Route path="/devpage" element={<DevPage />} />

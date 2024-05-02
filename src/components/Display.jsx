@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
 
+import { myContext } from "./MyContext";
+
 const Display = () => {
   const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
   const [attendances, setAttendances] = useState([]);
   const fetchData = useFetch();
+  const { userInfo } = myContext();
 
   const getAllCompanies = async () => {
     const res = await fetchData("/companies/all", "GET");
@@ -42,8 +45,8 @@ const Display = () => {
 
   const clockIn = async () => {
     const res = await fetchData("/attendances/clockin", "PUT", {
-      user_id: 1,
-      company_id: 1,
+      user_id: userInfo.id,
+      company_id: userInfo.company_id,
     });
 
     if (res.ok) {
@@ -68,7 +71,7 @@ const Display = () => {
       .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
 
     const res = await fetchData("/attendances/clockout", "PUT", {
-      user_id: 1,
+      user_id: userInfo.id,
       clock_out: formattedTime,
       date: formattedDate,
     });
@@ -96,7 +99,7 @@ const Display = () => {
 
     const res = await fetchData("/attendances/otin", "PUT", {
       OT_clock_in: formattedTime,
-      user_id: 1,
+      user_id: userInfo.id,
       date: formattedDate,
     });
 
@@ -123,7 +126,7 @@ const Display = () => {
 
     const res = await fetchData("/attendances/otout", "PUT", {
       OT_clock_out: formattedTime,
-      user_id: 1,
+      user_id: userInfo.id,
       date: formattedDate,
     });
 
@@ -139,6 +142,27 @@ const Display = () => {
     try {
       const res = await fetchData("/attendances/id", "DELETE", {
         id: id,
+      });
+
+      if (res.ok) {
+        getAllAttendances();
+      } else {
+        console.log(res.data);
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const editAttendance = async (id) => {
+    try {
+      const res = await fetchData("/attendances/id", "UPDATE", {
+        id: id,
+        clock_in: clock_in,
+        clock_out: clock_out,
+        attendance_type_id: attendance_type_id,
+        OT_clock_in: OT_clock_in,
+        OT_clock_out: OT_clock_out,
       });
 
       if (res.ok) {
@@ -205,6 +229,13 @@ const Display = () => {
               }}
             >
               Delete
+            </button>
+            <button
+              onClick={() => {
+                deleteAttendance(item.id);
+              }}
+            >
+              Edit
             </button>
             <hr />
           </div>

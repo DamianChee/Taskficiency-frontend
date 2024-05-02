@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import useFetch from "../hooks/useFetch";
+import { myContext } from "../components/MyContext";
 
 const LoginPage = () => {
   const [user, setUser] = useState({
@@ -7,10 +8,10 @@ const LoginPage = () => {
     password: "",
   });
   const fetchData = useFetch();
+  const { login, setUserInfo } = myContext();
 
   const loginUser = async () => {
     try {
-      console.log(user);
       const res = await fetchData("/users/login", "POST", user);
 
       if (res.ok) {
@@ -18,7 +19,9 @@ const LoginPage = () => {
           username: "",
           password: "",
         });
-        console.log(res.data.data);
+        console.log(res.data);
+        login(res.data.access, res.data.refresh);
+        setUserInfo(res.data.data);
       } else {
         alert(JSON.stringify(res.data));
         console.log(res);

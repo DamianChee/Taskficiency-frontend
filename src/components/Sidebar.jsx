@@ -22,6 +22,11 @@ const Sidebar = () => {
             </NavLink>
           </li>
           <li className="nav-item">
+            <NavLink to="/profile" className="nav-link">
+              Profile
+            </NavLink>
+          </li>
+          <li className="nav-item">
             <NavLink to="/employer" className="nav-link">
               Employer
             </NavLink>
