@@ -48,7 +48,7 @@ export const MyProvider = ({ children }) => {
       const res = await fetchData("/roles/all", "GET");
 
       if (res.ok) {
-        setRoles(res.data.data.name);
+        setRoles(res.data.data);
       }
     } catch (error) {
       console.error(error);
