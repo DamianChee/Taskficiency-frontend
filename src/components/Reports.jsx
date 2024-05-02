@@ -2,7 +2,7 @@ import React from "react";
 import { myContext } from "./MyContext";
 import useFetch from "../hooks/useFetch";
 
-const Reports = ({ select }) => {
+const Reports = ({ select, setter }) => {
   const { reports } = myContext();
   const fetchData = useFetch();
   const { getAllReports, userInfo } = myContext();
@@ -32,7 +32,10 @@ const Reports = ({ select }) => {
               <button
                 type="button"
                 className="btn btn-outline-primary"
-                onClick={() => select(report.id)}
+                onClick={() => {
+                  select(report.id);
+                  setter(true);
+                }}
               >
                 Load
               </button>
