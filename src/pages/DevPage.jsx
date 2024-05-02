@@ -10,6 +10,8 @@ const DevPage = () => {
   const [selectedFormat, setSelectedFormat] = useState();
   const [selectedReport, setSelectedReport] = useState();
   const [data, setData] = useState([[]]);
+  const [formatWasLoaded, setFormatWasLoaded] = useState(false);
+  const [reportWasLoaded, setReportWasLoaded] = useState(false);
 
   const fetchData = useFetch();
 
@@ -53,11 +55,19 @@ const DevPage = () => {
 
   return (
     <div>
-      <Formats select={setSelectedFormat} />
+      <Formats select={setSelectedFormat} setter={setFormatWasLoaded} />
       <hr />
-      <Reports select={setSelectedReport} />
+      <Reports select={setSelectedReport} setter={setReportWasLoaded} />
       <hr />
-      <ReportBuilder props={data} />
+      <ReportBuilder
+        props={data}
+        format={selectedFormat}
+        report={selectedReport}
+        formatLoadState={formatWasLoaded}
+        formatSetter={setFormatWasLoaded}
+        reportLoadState={reportWasLoaded}
+        reportSetter={setReportWasLoaded}
+      />
       <Seeder />
       <Display />
     </div>
