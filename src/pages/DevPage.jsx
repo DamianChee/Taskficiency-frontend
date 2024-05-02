@@ -5,6 +5,7 @@ import Seeder from "../components/Seeder";
 import Formats from "../components/Formats";
 import Reports from "../components/Reports";
 import useFetch from "../hooks/useFetch";
+import { myContext } from "../components/MyContext";
 
 const DevPage = () => {
   const [selectedFormat, setSelectedFormat] = useState();
@@ -14,13 +15,19 @@ const DevPage = () => {
   const [reportWasLoaded, setReportWasLoaded] = useState(false);
 
   const fetchData = useFetch();
+  const { access } = myContext();
 
   const loadFormatDatabase = async () => {
     if (!selectedFormat) return;
     try {
-      const res = await fetchData("/formats/id", "POST", {
-        id: selectedFormat,
-      });
+      const res = await fetchData(
+        "/formats/id",
+        "POST",
+        {
+          id: selectedFormat,
+        },
+        access
+      );
 
       if (res.ok) {
         setData(res.data.data.format);
@@ -33,9 +40,14 @@ const DevPage = () => {
   const loadReportDatabase = async () => {
     if (!selectedReport) return;
     try {
-      const res = await fetchData("/reports/id", "POST", {
-        id: selectedReport,
-      });
+      const res = await fetchData(
+        "/reports/id",
+        "POST",
+        {
+          id: selectedReport,
+        },
+        access
+      );
 
       if (res.ok) {
         setData(res.data.data.reports);

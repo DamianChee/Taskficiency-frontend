@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import { myContext } from "../components/MyContext";
 
@@ -15,6 +16,7 @@ const LoginPage = () => {
     getAllReports,
     setPermissionLevel,
   } = myContext();
+  const navigate = useNavigate();
 
   const loginUser = async () => {
     try {
@@ -31,8 +33,10 @@ const LoginPage = () => {
         setUserInfo(temp);
         getAllFormats(temp.company_id);
         getAllReports(temp.company_id);
-        if (temp.role_id === null || temp.role_id === undefined) return;
-        setPermissionLevel(temp.role_id);
+        if (temp.role_id !== null || temp.role_id !== undefined)
+          setPermissionLevel(temp.role_id);
+
+        navigate("/home");
       } else {
         alert(JSON.stringify(res.data));
         console.log(res);

@@ -5,11 +5,16 @@ import useFetch from "../hooks/useFetch";
 const Formats = ({ select, setter }) => {
   const { formats } = myContext();
   const fetchData = useFetch();
-  const { getAllFormats, userInfo } = myContext();
+  const { getAllFormats, userInfo, access } = myContext();
 
   const deleteFormat = async (format) => {
     try {
-      const res = await fetchData("/formats/id", "DELETE", { id: format.id });
+      const res = await fetchData(
+        "/formats/id",
+        "DELETE",
+        { id: format.id },
+        access
+      );
 
       if (res.ok) {
         alert(`Format "${format.name}" deleted!`);

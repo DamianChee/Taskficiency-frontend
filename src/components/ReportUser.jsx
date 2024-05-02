@@ -4,7 +4,7 @@ import Papa from "papaparse";
 import useFetch from "../hooks/useFetch";
 import { myContext } from "./MyContext";
 
-const ReportBuilder = ({
+const ReportUser = ({
   props,
   format,
   report,
@@ -274,29 +274,6 @@ const ReportBuilder = ({
           </button>
           <div className="col-md-2" />
         </div>
-        <div className="input-group px-3 mt-1 row">
-          <label className="input-group-text col-md-1">JSON</label>
-          <input
-            className="form-control col-md-4 rounded-end"
-            type="file"
-            accept=".json"
-            onChange={importFromJSON}
-          />
-          <div className="col-md-1" />
-          <button
-            className="btn btn-outline-primary col-md-2 rounded-start"
-            onClick={importFromJSON}
-          >
-            Import
-          </button>
-          <button
-            className="btn btn-outline-primary col-md-2 rounded-end"
-            onClick={exportToJSON}
-          >
-            Export
-          </button>
-          <div className="col-md-2" />
-        </div>
         <br />
         <div
           className="input-group px-3 mb-3 row"
@@ -306,21 +283,28 @@ const ReportBuilder = ({
           <button
             className="btn btn-outline-primary col-md-2"
             onClick={addColumn}
+            disabled
           >
             Add Column
           </button>
-          <button className="btn btn-outline-primary col-md-2" onClick={addRow}>
+          <button
+            className="btn btn-outline-primary col-md-2"
+            onClick={addRow}
+            disabled
+          >
             Add Row
           </button>
           <button
             className="btn btn-outline-primary col-md-2"
             onClick={removeLastColumn}
+            disabled
           >
             Remove Column
           </button>
           <button
             className="btn btn-outline-primary col-md-2"
             onClick={removeLastRow}
+            disabled
           >
             Remove Row
           </button>
@@ -331,6 +315,7 @@ const ReportBuilder = ({
                 className="btn btn-outline-primary col-md-2"
                 data-bs-toggle="modal"
                 data-bs-target="#overwriteFormatModal"
+                disabled
               >
                 Save format
               </button>
@@ -350,6 +335,7 @@ const ReportBuilder = ({
                 className="btn btn-outline-primary col-md-2"
                 data-bs-toggle="modal"
                 data-bs-target="#formatNameModal"
+                disabled
               >
                 Save format
               </button>
@@ -369,6 +355,7 @@ const ReportBuilder = ({
                 className="btn btn-outline-primary col-md-2"
                 data-bs-toggle="modal"
                 data-bs-target="#formatNameModal"
+                disabled
               >
                 Save format
               </button>
@@ -609,4 +596,4 @@ const ReportBuilder = ({
   );
 };
 
-export default ReportBuilder;
+export default ReportUser;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
 import { myContext } from "../components/MyContext";
 
-const EmployerHome = () => {
+const AttendanceListPage = () => {
   const [users, setUsers] = useState([]);
   const [attendances, setAttendances] = useState([]);
 
@@ -11,13 +11,18 @@ const EmployerHome = () => {
   const [selectedAttendanceInfo, setSelectedAttendanceInfo] = useState({});
 
   const fetchData = useFetch();
-  const { userInfo, roleNames } = myContext();
+  const { userInfo, roleNames, access } = myContext();
 
   const getAllUsers = async () => {
     try {
-      const res = await fetchData("/users/all/company", "POST", {
-        company_id: userInfo.company_id,
-      });
+      const res = await fetchData(
+        "/users/all/company",
+        "POST",
+        {
+          company_id: userInfo.company_id,
+        },
+        access
+      );
 
       if (res.ok) {
         setUsers(res.data.data);
@@ -29,9 +34,14 @@ const EmployerHome = () => {
 
   const getAllAttendanceByUser = async (user_id) => {
     try {
-      const res = await fetchData("/attendances/user", "POST", {
-        user_id: user_id,
-      });
+      const res = await fetchData(
+        "/attendances/user",
+        "POST",
+        {
+          user_id: user_id,
+        },
+        access
+      );
 
       if (res.ok) {
         setSelectedUserAttendance(res.data.data);
@@ -66,14 +76,19 @@ const EmployerHome = () => {
 
   const updateAttendance = async (id) => {
     try {
-      const res = await fetchData("/attendances/id", "PATCH", {
-        id: selectedAttendanceInfo.id,
-        date: selectedAttendanceInfo.date,
-        clock_in: selectedAttendanceInfo.clock_in,
-        clock_out: selectedAttendanceInfo.clock_out,
-        OT_clock_in: selectedAttendanceInfo.OT_clock_in,
-        OT_clock_out: selectedAttendanceInfo.OT_clock_out,
-      });
+      const res = await fetchData(
+        "/attendances/id",
+        "PATCH",
+        {
+          id: selectedAttendanceInfo.id,
+          date: selectedAttendanceInfo.date,
+          clock_in: selectedAttendanceInfo.clock_in,
+          clock_out: selectedAttendanceInfo.clock_out,
+          OT_clock_in: selectedAttendanceInfo.OT_clock_in,
+          OT_clock_out: selectedAttendanceInfo.OT_clock_out,
+        },
+        access
+      );
 
       if (res.ok) {
         getAllAttendanceByUser(selectedUserInfo.id);
@@ -85,9 +100,14 @@ const EmployerHome = () => {
 
   const deleteAttendance = async (id) => {
     try {
-      const res = await fetchData("/attendances/id/", "DELETE", {
-        id: id,
-      });
+      const res = await fetchData(
+        "/attendances/id/",
+        "DELETE",
+        {
+          id: id,
+        },
+        access
+      );
 
       if (res.ok) {
         getAllAttendanceByUser(selectedUserInfo.id);
@@ -385,4 +405,4 @@ const EmployerHome = () => {
   );
 };
 
-export default EmployerHome;
+export default AttendanceListPage;

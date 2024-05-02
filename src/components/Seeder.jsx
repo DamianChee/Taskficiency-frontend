@@ -1,13 +1,15 @@
 import React from "react";
 import useFetch from "../hooks/useFetch";
+import { myContext } from "./MyContext";
 
 const Seeder = () => {
   const fetchData = useFetch();
+  const { access } = myContext();
 
   const seedEverythingFromScratch = async () => {
-    await fetchData("/companies/seed", "GET");
-    await fetchData("/roles/seed", "GET");
-    await fetchData("/attendancetypes/seed", "GET");
+    await fetchData("/companies/seed", "GET", "", access);
+    await fetchData("/roles/seed", "GET", "", access);
+    await fetchData("/attendancetypes/seed", "GET", "", access);
   };
 
   return (

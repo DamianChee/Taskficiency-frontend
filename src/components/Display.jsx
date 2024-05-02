@@ -8,7 +8,7 @@ const Display = () => {
   const [users, setUsers] = useState([]);
   const [attendances, setAttendances] = useState([]);
   const fetchData = useFetch();
-  const { userInfo } = myContext();
+  const { userInfo, access } = myContext();
 
   const getAllCompanies = async () => {
     const res = await fetchData("/companies/all", "GET");
@@ -44,10 +44,15 @@ const Display = () => {
   };
 
   const clockIn = async () => {
-    const res = await fetchData("/attendances/clockin", "PUT", {
-      user_id: userInfo.id,
-      company_id: userInfo.company_id,
-    });
+    const res = await fetchData(
+      "/attendances/clockin",
+      "PUT",
+      {
+        user_id: userInfo.id,
+        company_id: userInfo.company_id,
+      },
+      access
+    );
 
     if (res.ok) {
       getAllAttendances();
@@ -70,11 +75,16 @@ const Display = () => {
       .toString()
       .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
 
-    const res = await fetchData("/attendances/clockout", "PUT", {
-      user_id: userInfo.id,
-      clock_out: formattedTime,
-      date: formattedDate,
-    });
+    const res = await fetchData(
+      "/attendances/clockout",
+      "PUT",
+      {
+        user_id: userInfo.id,
+        clock_out: formattedTime,
+        date: formattedDate,
+      },
+      access
+    );
 
     if (res.ok) {
       getAllAttendances();
@@ -97,11 +107,16 @@ const Display = () => {
       .toString()
       .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
 
-    const res = await fetchData("/attendances/otin", "PUT", {
-      OT_clock_in: formattedTime,
-      user_id: userInfo.id,
-      date: formattedDate,
-    });
+    const res = await fetchData(
+      "/attendances/otin",
+      "PUT",
+      {
+        OT_clock_in: formattedTime,
+        user_id: userInfo.id,
+        date: formattedDate,
+      },
+      access
+    );
 
     if (res.ok) {
       getAllAttendances();
@@ -124,11 +139,16 @@ const Display = () => {
       .toString()
       .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
 
-    const res = await fetchData("/attendances/otout", "PUT", {
-      OT_clock_out: formattedTime,
-      user_id: userInfo.id,
-      date: formattedDate,
-    });
+    const res = await fetchData(
+      "/attendances/otout",
+      "PUT",
+      {
+        OT_clock_out: formattedTime,
+        user_id: userInfo.id,
+        date: formattedDate,
+      },
+      access
+    );
 
     if (res.ok) {
       getAllAttendances();
@@ -140,9 +160,14 @@ const Display = () => {
 
   const deleteAttendance = async (id) => {
     try {
-      const res = await fetchData("/attendances/id", "DELETE", {
-        id: id,
-      });
+      const res = await fetchData(
+        "/attendances/id",
+        "DELETE",
+        {
+          id: id,
+        },
+        access
+      );
 
       if (res.ok) {
         getAllAttendances();
@@ -156,14 +181,19 @@ const Display = () => {
 
   const editAttendance = async (id) => {
     try {
-      const res = await fetchData("/attendances/id", "UPDATE", {
-        id: id,
-        clock_in: clock_in,
-        clock_out: clock_out,
-        attendance_type_id: attendance_type_id,
-        OT_clock_in: OT_clock_in,
-        OT_clock_out: OT_clock_out,
-      });
+      const res = await fetchData(
+        "/attendances/id",
+        "UPDATE",
+        {
+          id: id,
+          clock_in: clock_in,
+          clock_out: clock_out,
+          attendance_type_id: attendance_type_id,
+          OT_clock_in: OT_clock_in,
+          OT_clock_out: OT_clock_out,
+        },
+        access
+      );
 
       if (res.ok) {
         getAllAttendances();
@@ -229,13 +259,6 @@ const Display = () => {
               }}
             >
               Delete
-            </button>
-            <button
-              onClick={() => {
-                deleteAttendance(item.id);
-              }}
-            >
-              Edit
             </button>
             <hr />
           </div>

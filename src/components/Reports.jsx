@@ -5,11 +5,16 @@ import useFetch from "../hooks/useFetch";
 const Reports = ({ select, setter }) => {
   const { reports } = myContext();
   const fetchData = useFetch();
-  const { getAllReports, userInfo } = myContext();
+  const { getAllReports, userInfo, access } = myContext();
 
   const deleteReport = async (report) => {
     try {
-      const res = await fetchData("/reports/id", "DELETE", { id: report.id });
+      const res = await fetchData(
+        "/reports/id",
+        "DELETE",
+        { id: report.id },
+        access
+      );
 
       if (res.ok) {
         alert(`Report "${report.name}" deleted!`);

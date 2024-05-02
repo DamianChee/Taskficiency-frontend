@@ -11,18 +11,23 @@ const RegistrationPage = () => {
     company_id: "",
   });
 
-  const { companies } = myContext();
+  const { companies, access } = myContext();
   const fetchData = useFetch();
 
   const registerUser = async () => {
     try {
       console.log(user);
-      const res = await fetchData("/users/register", "PUT", {
-        name: user.name,
-        username: user.username,
-        password: user.password,
-        company_id: user.company_id,
-      });
+      const res = await fetchData(
+        "/users/register",
+        "PUT",
+        {
+          name: user.name,
+          username: user.username,
+          password: user.password,
+          company_id: user.company_id,
+        },
+        access
+      );
 
       if (res.ok) {
         setUser({

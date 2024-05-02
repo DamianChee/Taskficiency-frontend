@@ -9,14 +9,19 @@ const ProfilePage = () => {
   const [updateUser, setUpdateUser] = useState({});
 
   const fetchData = useFetch();
-  const { userInfo, setUserInfo, roles } = myContext();
+  const { userInfo, setUserInfo, roles, access } = myContext();
 
   const getCompanyName = async () => {
     if (userInfo.company_id === null) return;
     try {
-      const res = await fetchData("/companies/id", "POST", {
-        id: userInfo.company_id,
-      });
+      const res = await fetchData(
+        "/companies/id",
+        "POST",
+        {
+          id: userInfo.company_id,
+        },
+        access
+      );
 
       if (res.ok) {
         setCompany(res.data.data.name);
@@ -31,9 +36,14 @@ const ProfilePage = () => {
   const getRoleName = async () => {
     if (userInfo.role_id === null) return;
     try {
-      const res = await fetchData("/roles/id", "POST", {
-        id: userInfo.role_id,
-      });
+      const res = await fetchData(
+        "/roles/id",
+        "POST",
+        {
+          id: userInfo.role_id,
+        },
+        access
+      );
 
       if (res.ok) {
         setRole(res.data.data.name);
@@ -47,7 +57,7 @@ const ProfilePage = () => {
 
   const updateUserInfo = async () => {
     try {
-      const res = await fetchData("/users/id", "PATCH", updateUser);
+      const res = await fetchData("/users/id", "PATCH", updateUser, access);
 
       if (res.ok) {
         setUserInfo((prevUser) => ({
