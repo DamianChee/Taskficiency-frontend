@@ -8,7 +8,13 @@ const LoginPage = () => {
     password: "",
   });
   const fetchData = useFetch();
-  const { login, setUserInfo } = myContext();
+  const {
+    login,
+    setUserInfo,
+    getAllFormats,
+    getAllReports,
+    setPermissionLevel,
+  } = myContext();
 
   const loginUser = async () => {
     try {
@@ -20,8 +26,13 @@ const LoginPage = () => {
           password: "",
         });
         console.log(res.data);
+        const temp = res.data.data;
         login(res.data.access, res.data.refresh);
-        setUserInfo(res.data.data);
+        setUserInfo(temp);
+        getAllFormats(temp.company_id);
+        getAllReports(temp.company_id);
+        if (temp.role_id === null || temp.role_id === undefined) return;
+        setPermissionLevel(temp.role_id);
       } else {
         alert(JSON.stringify(res.data));
         console.log(res);

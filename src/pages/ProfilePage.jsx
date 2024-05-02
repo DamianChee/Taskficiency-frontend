@@ -4,13 +4,12 @@ import { myContext } from "../components/MyContext";
 
 const ProfilePage = () => {
   const [company, setCompany] = useState("");
-  const [allRoles, setAllRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState();
   const [role, setRole] = useState("");
   const [updateUser, setUpdateUser] = useState({});
 
   const fetchData = useFetch();
-  const { userInfo, setUserInfo } = myContext();
+  const { userInfo, setUserInfo, roles } = myContext();
 
   const getCompanyName = async () => {
     if (userInfo.company_id === null) return;
@@ -23,18 +22,6 @@ const ProfilePage = () => {
         setCompany(res.data.data.name);
       } else {
         console.warn(res);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const getAllRoles = async () => {
-    try {
-      const res = await fetchData("/roles/all", "GET");
-
-      if (res.ok) {
-        setAllRoles(res.data.data);
       }
     } catch (error) {
       console.error(error);
@@ -89,7 +76,6 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    getAllRoles();
     getCompanyName();
     getRoleName();
 
@@ -249,7 +235,7 @@ const ProfilePage = () => {
                     onChange={handleChangeRole}
                   >
                     <option>Select a role...</option>
-                    {allRoles.map((role) => (
+                    {roles.map((role) => (
                       <option key={role.id} value={role.id}>
                         {role.name}
                       </option>

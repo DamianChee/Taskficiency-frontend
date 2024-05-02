@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Spreadsheet from "react-spreadsheet";
 import Papa from "papaparse";
 import useFetch from "../hooks/useFetch";
+import { myContext } from "./MyContext";
 
-const ReportBuilder = () => {
+const ReportBuilder = ({ props }) => {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [data, setData] = useState([[]]);
+  const [formatName, setFormatName] = useState("");
+  const [reportName, setReportName] = useState("");
   const fetchData = useFetch();
+  const { getAllFormats, getAllReports, userInfo } = myContext();
 
   // Function to export from csv file
   const exportToCSV = () => {
@@ -88,29 +92,34 @@ const ReportBuilder = () => {
   // Function to save as json to database
   const saveFormatToDatabase = async () => {
     try {
-      const res = await fetchData("/format/create", "PUT", {
+      const res = await fetchData("/formats/create", "PUT", {
+        name: formatName,
         format: data,
       });
 
       if (res.ok) {
+        setFormatName("");
+        getAllFormats(userInfo.company_id);
         alert("Format Saved!");
       } else {
         console.log(res);
       }
     } catch (error) {
-      alert(error.message);
-      console.log(error.message);
+      console.error(error);
     }
   };
 
   // Function to save as json to database
   const saveReportToDatabase = async () => {
     try {
-      const res = await fetchData("/report/create", "PUT", {
+      const res = await fetchData("/reports/create", "PUT", {
+        name: reportName,
         reports: data,
       });
 
       if (res.ok) {
+        setReportName("");
+        getAllReports(userInfo.company_id);
         alert("Report Saved!");
       } else {
         console.log(res);
@@ -151,116 +160,241 @@ const ReportBuilder = () => {
     }
   };
 
+  useEffect(() => {
+    if (props) {
+      setData([[]]);
+      setData(props);
+    }
+  }, [props]);
+
   return (
-    <div className="container">
-      <h3 className="p-3 my-3 bg-info bg-opacity-10 border border-info rounded">
-        Report Builder
-      </h3>
-      {/* <div class="input-group mb-3">
+    <>
+      <div className="container">
+        <h3 className="p-3 my-3 bg-info bg-opacity-10 border border-info rounded">
+          Report Builder
+        </h3>
+        {/* <div class="input-group mb-3">
         <label class="input-group-text" htmlFor="inputGroupFile01">
           CSV
         </label>
         <button onClick={exportToCSV}>Export to CSV</button>
         <input type="file" className="form-control" id="inputGroupFile01" />
       </div> */}
-      <div className="input-group px-3 mt-1 row">
-        <label className="input-group-text col-md-1">CSV</label>
-        <input
-          className="form-control col-md-4 rounded-end"
-          type="file"
-          accept=".csv"
-          onChange={importFromCSV}
-        />
-        <div className="col-md-1" />
-        <button
-          className="btn btn-outline-primary col-md-2 rounded-start"
-          onClick={importFromCSV}
+        <div className="input-group px-3 mt-1 row">
+          <label className="input-group-text col-md-1">CSV</label>
+          <input
+            className="form-control col-md-4 rounded-end"
+            type="file"
+            accept=".csv"
+            onChange={importFromCSV}
+          />
+          <div className="col-md-1" />
+          <button
+            className="btn btn-outline-primary col-md-2 rounded-start"
+            onClick={importFromCSV}
+          >
+            Import
+          </button>
+          <button
+            className="btn btn-outline-primary col-md-2 rounded-end"
+            onClick={exportToCSV}
+          >
+            Export
+          </button>
+          <div className="col-md-2" />
+        </div>
+        <div className="input-group px-3 mt-1 row">
+          <label className="input-group-text col-md-1">JSON</label>
+          <input
+            className="form-control col-md-4 rounded-end"
+            type="file"
+            accept=".json"
+            onChange={importFromJSON}
+          />
+          <div className="col-md-1" />
+          <button
+            className="btn btn-outline-primary col-md-2 rounded-start"
+            onClick={importFromJSON}
+          >
+            Import
+          </button>
+          <button
+            className="btn btn-outline-primary col-md-2 rounded-end"
+            onClick={exportToJSON}
+          >
+            Export
+          </button>
+          <div className="col-md-2" />
+        </div>
+        <br />
+        <div
+          className="input-group px-3 mb-3 row"
+          role="group"
+          aria-label="Basic outlined example"
         >
-          Import
-        </button>
-        <button
-          className="btn btn-outline-primary col-md-2 rounded-end"
-          onClick={exportToCSV}
+          <button
+            className="btn btn-outline-primary col-md-2"
+            onClick={addColumn}
+          >
+            Add Column
+          </button>
+          <button className="btn btn-outline-primary col-md-2" onClick={addRow}>
+            Add Row
+          </button>
+          <button
+            className="btn btn-outline-primary col-md-2"
+            onClick={removeLastColumn}
+          >
+            Remove Column
+          </button>
+          <button
+            className="btn btn-outline-primary col-md-2"
+            onClick={removeLastRow}
+          >
+            Remove Row
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline-primary col-md-2"
+            data-bs-toggle="modal"
+            data-bs-target="#formatNameModal"
+          >
+            Save format
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline-primary col-md-2"
+            data-bs-toggle="modal"
+            data-bs-target="#reportNameModal"
+          >
+            Save report
+          </button>
+        </div>
+        <div
+          style={{ height: 250, width: 800, overflow: "auto" }}
+          className="border border-primary-subtle"
         >
-          Export
-        </button>
-        <div className="col-md-2" />
+          <Spreadsheet
+            data={data}
+            columns={columns}
+            rows={rows}
+            onChange={setData}
+          />
+        </div>
       </div>
-      <div className="input-group px-3 mt-1 row">
-        <label className="input-group-text col-md-1">JSON</label>
-        <input
-          className="form-control col-md-4 rounded-end"
-          type="file"
-          accept=".json"
-          onChange={importFromJSON}
-        />
-        <div className="col-md-1" />
-        <button
-          className="btn btn-outline-primary col-md-2 rounded-start"
-          onClick={importFromJSON}
-        >
-          Import
-        </button>
-        <button
-          className="btn btn-outline-primary col-md-2 rounded-end"
-          onClick={exportToJSON}
-        >
-          Export
-        </button>
-        <div className="col-md-2" />
-      </div>
-      <br />
+
       <div
-        className="input-group px-3 mb-3 row"
-        role="group"
-        aria-label="Basic outlined example"
+        className="modal fade"
+        id="formatNameModal"
+        tabIndex="-1"
+        aria-hidden="true"
       >
-        <button
-          className="btn btn-outline-primary col-md-2"
-          onClick={addColumn}
-        >
-          Add Column
-        </button>
-        <button className="btn btn-outline-primary col-md-2" onClick={addRow}>
-          Add Row
-        </button>
-        <button
-          className="btn btn-outline-primary col-md-2"
-          onClick={removeLastColumn}
-        >
-          Remove Column
-        </button>
-        <button
-          className="btn btn-outline-primary col-md-2"
-          onClick={removeLastRow}
-        >
-          Remove Row
-        </button>
-        <button
-          className="btn btn-outline-primary col-md-2"
-          onClick={saveFormatToDatabase}
-        >
-          Save format
-        </button>
-        <button
-          className="btn btn-outline-primary col-md-2"
-          onClick={saveReportToDatabase}
-        >
-          Save report
-        </button>
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="formatNameLabel">
+                Enter filename to save:
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              />
+            </div>
+            <div className="modal-body">
+              <div className="row align-items-center">
+                <div className="col-4">
+                  <label className="col-form-label">Name: </label>
+                </div>
+                <div className="col-auto">
+                  <input
+                    type="text"
+                    id="filename"
+                    className="form-control"
+                    value={formatName}
+                    onChange={(e) => setFormatName(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={saveFormatToDatabase}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+
       <div
-        style={{ height: 250, width: 800, overflow: "auto" }}
-        className="border border-primary-subtle"
+        className="modal fade"
+        id="reportNameModal"
+        tabIndex="-1"
+        aria-hidden="true"
       >
-        <Spreadsheet
-          data={data}
-          columns={columns}
-          rows={rows}
-          onChange={setData}
-        />
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="formatNameLabel">
+                Enter filename to save:
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              />
+            </div>
+            <div className="modal-body">
+              <div className="row align-items-center">
+                <div className="col-4">
+                  <label className="col-form-label">Name: </label>
+                </div>
+                <div className="col-auto">
+                  <input
+                    type="text"
+                    id="filename"
+                    className="form-control"
+                    value={reportName}
+                    onChange={(e) => setReportName(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={saveReportToDatabase}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

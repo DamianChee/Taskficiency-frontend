@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import useFetch from "../hooks/useFetch";
+import { myContext } from "../components/MyContext";
 
 const RegistrationPage = () => {
-  const [companies, setCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState();
   const [user, setUser] = useState({
     name: "",
@@ -10,22 +10,9 @@ const RegistrationPage = () => {
     password: "",
     company_id: "",
   });
+
+  const { companies } = myContext();
   const fetchData = useFetch();
-
-  const getAllCompanies = async () => {
-    try {
-      const res = await fetchData("/companies/all", "GET");
-
-      if (res.ok) {
-        setCompanies(res.data.data);
-      } else {
-        alert(JSON.stringify(res.data));
-        console.log(res.data);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  };
 
   const registerUser = async () => {
     try {
@@ -67,13 +54,9 @@ const RegistrationPage = () => {
     setSelectedCompany(event.target.value);
     setUser((prevUser) => ({
       ...prevUser,
-      company_id: 1,
+      company_id: event.target.value,
     }));
   };
-
-  useEffect(() => {
-    getAllCompanies();
-  }, []);
 
   return (
     <div className="container">
