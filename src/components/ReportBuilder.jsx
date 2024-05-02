@@ -4,7 +4,15 @@ import Papa from "papaparse";
 import useFetch from "../hooks/useFetch";
 import { myContext } from "./MyContext";
 
-const ReportBuilder = ({ props }) => {
+const ReportBuilder = ({
+  props,
+  format,
+  report,
+  formatLoadState,
+  formatSetter,
+  reportLoadState,
+  reportSetter,
+}) => {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [data, setData] = useState([[]]);
@@ -100,6 +108,8 @@ const ReportBuilder = ({ props }) => {
       if (res.ok) {
         setFormatName("");
         getAllFormats(userInfo.company_id);
+        formatSetter(false);
+        reportSetter(false);
         alert("Format Saved!");
       } else {
         console.log(res);
@@ -120,6 +130,55 @@ const ReportBuilder = ({ props }) => {
       if (res.ok) {
         setReportName("");
         getAllReports(userInfo.company_id);
+        formatSetter(false);
+        reportSetter(false);
+        alert("Report Saved!");
+      } else {
+        console.log(res);
+      }
+    } catch (error) {
+      alert(error.message);
+      console.log(error.message);
+    }
+  };
+
+  // Function to save as json to database
+  const overwriteFormatToDatabase = async () => {
+    try {
+      const res = await fetchData("/formats/id", "PATCH", {
+        id: format,
+        name: formatName,
+        format: data,
+      });
+
+      if (res.ok) {
+        setFormatName("");
+        getAllFormats(userInfo.company_id);
+        formatSetter(false);
+        reportSetter(false);
+        alert("Format Saved!");
+      } else {
+        console.log(res);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Function to save as json to database
+  const overwriteReportToDatabase = async () => {
+    try {
+      const res = await fetchData("/reports/id", "PATCH", {
+        id: report,
+        name: reportName,
+        reports: data,
+      });
+
+      if (res.ok) {
+        setReportName("");
+        getAllReports(userInfo.company_id);
+        formatSetter(false);
+        reportSetter(false);
         alert("Report Saved!");
       } else {
         console.log(res);
@@ -253,22 +312,64 @@ const ReportBuilder = ({ props }) => {
           >
             Remove Row
           </button>
-          <button
-            type="button"
-            className="btn btn-outline-primary col-md-2"
-            data-bs-toggle="modal"
-            data-bs-target="#formatNameModal"
-          >
-            Save format
-          </button>
-          <button
-            type="button"
-            className="btn btn-outline-primary col-md-2"
-            data-bs-toggle="modal"
-            data-bs-target="#reportNameModal"
-          >
-            Save report
-          </button>
+          {formatLoadState ? (
+            <>
+              <button
+                type="button"
+                className="btn btn-outline-primary col-md-2"
+                data-bs-toggle="modal"
+                data-bs-target="#overwriteFormatModal"
+              >
+                Save format
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-primary col-md-2"
+                data-bs-toggle="modal"
+                data-bs-target="#reportNameModal"
+              >
+                Save report
+              </button>
+            </>
+          ) : reportLoadState ? (
+            <>
+              <button
+                type="button"
+                className="btn btn-outline-primary col-md-2"
+                data-bs-toggle="modal"
+                data-bs-target="#formatNameModal"
+              >
+                Save format
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-primary col-md-2"
+                data-bs-toggle="modal"
+                data-bs-target="#overwriteReportModal"
+              >
+                Save report
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="btn btn-outline-primary col-md-2"
+                data-bs-toggle="modal"
+                data-bs-target="#formatNameModal"
+              >
+                Save format
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-primary col-md-2"
+                data-bs-toggle="modal"
+                data-bs-target="#reportNameModal"
+              >
+                Save report
+              </button>
+            </>
+          )}
         </div>
         <div
           style={{ height: 250, width: 800, overflow: "auto" }}
@@ -280,6 +381,104 @@ const ReportBuilder = ({ props }) => {
             rows={rows}
             onChange={setData}
           />
+        </div>
+      </div>
+
+      <div
+        className="modal fade"
+        id="overwriteFormatModal"
+        tabIndex="-1"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="formatNameLabel">
+                Save as:
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              />
+            </div>
+            <div className="modal-body">
+              <div className="row align-items-center">
+                <div className="col-4">
+                  <label className="col-form-label">
+                    Overwrite or Save as new?
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={overwriteFormatToDatabase}
+              >
+                Overwrite
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#formatNameModal"
+              >
+                Save New
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="modal fade"
+        id="overwriteReportModal"
+        tabIndex="-1"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="formatNameLabel">
+                Save as:
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              />
+            </div>
+            <div className="modal-body">
+              <div className="row align-items-center">
+                <div className="col-4">
+                  <label className="col-form-label">
+                    Overwrite or Save as new?
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={overwriteReportToDatabase}
+              >
+                Overwrite
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#reportNameModal"
+              >
+                Save New
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
