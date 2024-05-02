@@ -28,7 +28,7 @@ function App() {
 
   return (
     <div>
-      <h2>GA SEI</h2>
+      <h2>Taskficiency 1.0v</h2>
       <Router>
         <Sidebar />
         <Routes>

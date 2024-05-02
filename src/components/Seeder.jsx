@@ -7,9 +7,10 @@ const Seeder = () => {
   const { access } = myContext();
 
   const seedEverythingFromScratch = async () => {
-    await fetchData("/companies/seed", "GET", "", access);
-    await fetchData("/roles/seed", "GET", "", access);
-    await fetchData("/attendancetypes/seed", "GET", "", access);
+    await fetchData("/companies/seed", "GET");
+    await fetchData("/roles/seed", "GET");
+    await fetchData("/attendancetypes/seed", "GET");
+    await fetchData("/users/seed", "GET");
   };
 
   return (

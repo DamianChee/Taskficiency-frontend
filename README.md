@@ -10,11 +10,44 @@ The specific and summarized features can be found below.
 
 ## Features
 
+- Track Employee attendance
+- Create Excel-sheet styled report formats
+- Reuse formats to generate new reports
+- Import and export CSV and JSON to backup reports
+- JWT-based Authentication
+- Profile editing for employees to provide contact information
+
+## Screenshots
+
+The landing page and most important feature of any attendance app.
+
+![Landing Page](./public/ss1.PNG)
+
+The second most important feature of the Taskficiency app, the report builder!
+
+![Report Builder](./public/ss2.PNG)
+
+Editing of and filling in of saved report formats!
+
+![Excel Sheet](./public/ss3.PNG)
+
+Quick overview and glance of employee's attendance today.
+
+![Attendance Overview](./public/ss4.PNG)
+
+A detailed historical view of an employee's attendance.
+
+![Check Attendance](./public/ss5.PNG)
+
 ## Technologies Used
 
 - HTML
 - CSS
 - Javascript
+- Bootstrap CSS/JS
+- PapaParse
+- React-Spreadsheet
+- Sequelize
 - Postgres
 - Express
 - React
@@ -46,6 +79,7 @@ To run this project, you will need to add the following environment variables to
 - API usage
 - React lifecycle
 - Importing & Exporting CSV, JSON
+- PapaParse
 - Using React-Spreadsheet to create a dynamic excel sheet-lookalike
 
 [Backend]
@@ -61,7 +95,20 @@ To run this project, you will need to add the following environment variables to
 
 ## Ice Box
 
+- Generate attendance report monthly
+- Generate different types of attendance report
+- Track employee working days and leaves balance
+- Apply for leave status
+- Export reports to excel formats (XLSX)
+- Import excel sheet into custom report template
+- Improve Frontend design
+- Clock-in and out timer instead of tracking one datetime in and out
+- OT hours timer instead of tracking one datetime in and out
+- Profile viewing and editing from higher role employees/boss
+
 ## Known Bugs
+
+- I'm praying there aren't any
 
 ## Authors
 
@@ -74,3 +121,4 @@ To run this project, you will need to add the following environment variables to
 - [Papa Parse](https://www.papaparse.com/)
 - [Stackoverflow](https://stackoverflow.com/)
 - [Awesome Readme Editor](https://readme.so/editor)
+- [My very awesome understanding girlfriend]()
