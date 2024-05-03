@@ -28,7 +28,7 @@ function App() {
 
   return (
     <div>
-      <h2>Taskficiency 1.0v</h2>
+      <h2>Taskficiency v1.0</h2>
       <Router>
         <Sidebar />
         <Routes>
