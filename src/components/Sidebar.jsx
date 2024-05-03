@@ -34,6 +34,9 @@ const Sidebar = () => {
       {isLoggedIn && permissionLevel === 6 && (
         <EmployeeNav logout={handleLogout} />
       )}
+      {isLoggedIn && permissionLevel === null && (
+        <EmployeeNav logout={handleLogout} />
+      )}
       {!isLoggedIn && <NoLoginNav />}
     </>
   );
